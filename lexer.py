@@ -22,8 +22,9 @@ RIGHT_PAREN = 14
 INT = 15
 ID = 16
 KEYWORD = 17
-END_OF_INPUT = 18
-INPUT_ERROR = 19
+STRING = 18
+END_OF_INPUT = 19
+INPUT_ERROR = 20
 
 
 def new_line():
@@ -70,6 +71,30 @@ def lex_id_or_keyword(input):
         if iterator == lexeme_id:
             return (KEYWORD, lexeme_id), input[i:]
     return (ID, lexeme_id), input[i:]
+
+
+def lex_string(input):
+    i = 0
+    lexeme_string = ""
+    if input[i] == "\"":
+        i = i + 1
+    while i < len(input) and input[i] != "\"":
+        i = i + 1
+        if input[i - 1] == "\\":
+            i = i + 1
+            if input[i - 1] == "\\":
+                lexeme_string = lexeme_string + "\\"
+            elif input[i - 1] == "\"":
+                lexeme_string = lexeme_string + "\""
+            elif input[i - 1] == "n":
+                lexeme_string = lexeme_string + "\n"
+            elif input[i - 1] == "t":
+                lexeme_string = lexeme_string + '\t'
+            else:
+                lexeme_string = lexeme_string + input[i]
+        else:
+            lexeme_string = lexeme_string + input[i - 1]
+    return (STRING, lexeme_string), input[i + 1:]
 
 
 def lex(input):
@@ -127,12 +152,18 @@ def lex(input):
         return lex_int(input)
     elif input[i].isalpha() or input[i] == "_":
         return lex_id_or_keyword(input)
+    elif input[i] == "\"":
+        return lex_string(input)
+    else:
+        return (INPUT_ERROR, lex_error("Unexpected Character")), input[i + 1:]
 
 
 if __name__ == "__main__":
     userInput = list(sys.stdin.read())
     adjInput = lex(userInput)
     while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
-        print(adjInput[0])
+        # print(str(adjInput[0]))
+        print(''.join(adjInput[0]))
+        # print(str(adjInput[0][0]) + ", " + adjInput[0][1])
         adjInput = lex(adjInput[1])
 print(adjInput[0])
