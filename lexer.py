@@ -69,8 +69,7 @@ def lex_id_or_keyword(input):
     for iterator in keywords:
         if iterator == lexeme_id:
             return (KEYWORD, lexeme_id), input[i:]
-        else:
-            return (ID, lexeme_id), input[i:]
+    return (ID, lexeme_id), input[i:]
 
 
 def lex(input):
