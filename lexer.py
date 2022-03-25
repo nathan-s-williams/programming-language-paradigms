@@ -34,46 +34,48 @@ def new_line():
 def lex_error(input):
     pass
 
-def clean_space_comment(input):
 
+def clean_space_comment(input):
+    i = 0
+    while i < len(input) and (input[i].isspace() or input[i] == "/" or input[i] == "\n"):
+        i = i + 1
+        if input[i - 1] == "\n":
+            new_line()
+        elif input[i - 1] == "/":
+            if i >= len(input) or input[i] != "/":
+                break
+            else:
+                while i < len(input) and input[i] != "\n":
+                    i = i + 1
+                new_line()
+    return input[i:]
 
 
 def lex_int(input):
     i = 0
-    lexeme_int = 0
+    lexeme_int = ""
     while i < len(input) and input[i].isdigit():
-        lexeme_int = input[i]
+        lexeme_int = lexeme_int + input[i]
         i = i + 1
     return (INT, lexeme_int), input[i:]
 
 
 def lex_id_or_keyword(input):
     i = 0
-    lexeme_id = 0
+    lexeme_id = ""
     while i < len(input) and (input[i].isalpha() or input[i].isdigit()):
-        lexeme_id = input[i]
+        lexeme_id = lexeme_id + input[i]
         i = i + 1
     for iterator in keywords:
         if iterator == lexeme_id:
             return (KEYWORD, lexeme_id), input[i:]
         else:
-            return (INT, lexeme_id), input[i:]
+            return (ID, lexeme_id), input[i:]
 
 
 def lex(input):
+    input = clean_space_comment(input)
     i = 0
-    while i < len(input) and (input[i].isspace() or input[i] == "/"):
-        i = i + 1
-        if input[i - 1] == "\n":
-            new_line()
-        elif input[i - 1] == "/":  # Comment
-            if i < len(input) and input[i] == "/":
-                while i < len(input) and input[i] != "\n":
-                    i = i + 1
-                new_line()
-            else:
-                return (DIVISION, None), input[i:]
-
     if i >= len(input):
         return (END_OF_INPUT, None), []
     elif input[i] == ";":
@@ -88,6 +90,8 @@ def lex(input):
         return (RIGHT_PAREN, None), input[i + 1:]
     elif input[i] == "*":
         return (MULTIPLICATION, None), input[i + 1:]
+    elif input[i] == "/":
+        return (DIVISION, None), input[i + 1:]
     elif input[i] == "!":
         i = i + 1
         if i < len(input) and input[i] == "=":
