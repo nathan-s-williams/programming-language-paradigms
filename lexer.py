@@ -4,7 +4,7 @@ import sys
 keywords = ["print", "get", "if", "then", "else", "end", "while", "do", "end", "and", "or", "not", "for"]
 line = 1
 
-SEMICOLON = 00
+SEMICOLON = 0
 ASSIGN = 1
 PLUS = 2
 MINUS = 3
@@ -55,6 +55,10 @@ def clean_space_comment(input):
 def lex_int(input):
     i = 0
     lexeme_int = ""
+    if input[i] == "-" or input[i] == "+":
+        if input[i] == "-":
+            lexeme_int = lexeme_int + input[i]
+        i = i + 1
     while i < len(input) and input[i].isdigit():
         lexeme_int = lexeme_int + input[i]
         i = i + 1
@@ -112,8 +116,6 @@ def lex(input):
         return (LEFT_PAREN, None), input[i + 1:]
     elif input[i] == ")":
         return (RIGHT_PAREN, None), input[i + 1:]
-    elif input[i] == "*":
-        return (MULTIPLICATION, None), input[i + 1:]
     elif input[i] == "/":
         return (DIVISION, None), input[i + 1:]
     elif input[i] == "!":
@@ -143,8 +145,8 @@ def lex(input):
     elif input[i] == "+" or input[i] == "-":
         i = i + 1
         if i < len(input) and input[i].isdigit():
-            return (INT, lex_int(input)), input[i + 1:]
-        elif i < len(input) and input[i] == "+":
+            return lex_int(input)
+        elif i < len(input) and input[i - 1] == "+":
             return (PLUS, None), input[i:]
         else:
             return (MINUS, None), input[i:]
