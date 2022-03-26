@@ -162,8 +162,6 @@ if __name__ == "__main__":
     userInput = list(sys.stdin.read())
     adjInput = lex(userInput)
     while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
-        # print(str(adjInput[0]))
-        print(''.join(adjInput[0]))
-        # print(str(adjInput[0][0]) + ", " + adjInput[0][1])
+        print(": ".join([str(v) for v in adjInput[0]]))
         adjInput = lex(adjInput[1])
-print(adjInput[0])
+print(": ".join([str(v) for v in adjInput[0]]))
