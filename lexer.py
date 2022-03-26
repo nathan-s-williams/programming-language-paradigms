@@ -4,7 +4,7 @@ import sys
 keywords = ["print", "get", "if", "then", "else", "end", "while", "do", "end", "and", "or", "not", "for"]
 line = 1
 
-SEMICOLON = 0
+SEMICOLON = 00
 ASSIGN = 1
 PLUS = 2
 MINUS = 3
@@ -32,8 +32,8 @@ def new_line():
     line = line + 1
 
 
-def lex_error(input):
-    pass
+def lex_error(error_msg):
+    return INPUT_ERROR, "Error on line " + str(line) + ": " + error_msg
 
 
 def clean_space_comment(input):
@@ -121,7 +121,7 @@ def lex(input):
         if i < len(input) and input[i] == "=":
             return (NOT_EQUAL, None), input[i:]
         else:
-            return (INPUT_ERROR, lex_error("Unexpected Character")), input[i:]
+            return lex_error("Unexpected Character \'" + input[i] + "\' after \'!\'. Expect \'=\'"), input[i:]
     elif input[i] == "<":
         i = i + 1
         if i < len(input) and input[i] == "=":
@@ -155,13 +155,13 @@ def lex(input):
     elif input[i] == "\"":
         return lex_string(input)
     else:
-        return (INPUT_ERROR, lex_error("Unexpected Character")), input[i + 1:]
+        return lex_error("Unexpected Character \'" + input[i] + "\'."), input[i + 1:]
 
 
 if __name__ == "__main__":
     userInput = list(sys.stdin.read())
     adjInput = lex(userInput)
     while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
-        print(": ".join([str(v) for v in adjInput[0]]))
+        print(":\t".join([str(v) for v in adjInput[0]]))
         adjInput = lex(adjInput[1])
-print(": ".join([str(v) for v in adjInput[0]]))
+print(":\t".join([str(v) for v in adjInput[0]]))
