@@ -96,10 +96,13 @@ def lex_string(input):
             elif input[i - 1] == "t":
                 lexeme_string = lexeme_string + '\t'
             else:
-                lexeme_string = lexeme_string + input[i]
+                lexeme_string = lexeme_string + input[i - 1]
         else:
             lexeme_string = lexeme_string + input[i - 1]
-    return (STRING, lexeme_string), input[i + 1:]
+    if i >= len(input) and input[i - 1] != "\"":
+        return lex_error("Missing ending quotation. Cannot process remaining of input."), input[i:]
+    else:
+        return (STRING, lexeme_string), input[i + 1:]
 
 
 def lex(input):
