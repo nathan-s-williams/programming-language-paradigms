@@ -44,6 +44,7 @@ def clean_space_comment(input):
             new_line()
         elif input[i - 1] == "/":
             if i >= len(input) or input[i] != "/":
+                i = i - 1
                 break
             else:
                 while i < len(input) and input[i] != "\n":
@@ -121,7 +122,7 @@ def lex(input):
     elif input[i] == "!":
         i = i + 1
         if i < len(input) and input[i] == "=":
-            return (NOT_EQUAL, None), input[i:]
+            return (NOT_EQUAL, None), input[i + 1:]
         else:
             return lex_error("Unexpected Character \'" + input[i] + "\' after \'!\'. Expect \'=\'"), input[i:]
     elif input[i] == "<":
