@@ -100,7 +100,7 @@ def lex_string(input):
         else:
             lexeme_string = lexeme_string + input[i - 1]
     if i >= len(input) and input[i - 1] != "\"":
-        return lex_error("Missing ending quotation. Cannot process remaining of input."), input[i:]
+        return lex_error("Missing ending quotation. Cannot process remaining input."), input[i:]
     else:
         return (STRING, lexeme_string), input[i + 1:]
 
