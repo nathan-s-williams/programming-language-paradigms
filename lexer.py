@@ -55,7 +55,7 @@ def clean_space_comment(input):
                 i = i - 1
                 break
             else:
-                while i < len(input) and input[i] != "\n": # Consume all input after // to the next \n character.
+                while i < len(input) and input[i] != "\n":  # Consume all input after // to the next \n character.
                     i = i + 1
                 new_line()
     return input[i:]
@@ -89,7 +89,7 @@ def lex_id_or_keyword(input):
     i = 0
     lexeme_id = ""
     while i < len(input) and (input[i].isalpha() or input[i].isdigit()):  # Continue lexeme until non-alpha or
-        lexeme_id = lexeme_id + input[i]                                  # non-digit is found.
+        lexeme_id = lexeme_id + input[i]  # non-digit is found.
         i = i + 1
     for iterator in keywords:
         if iterator == lexeme_id:
@@ -194,10 +194,17 @@ if __name__ == "__main__":
         input_method = input("Invalid input. Please choose which mode you would like the lexer to run. Console(1) or "
                              "File(2): ")
     input_method = int(input_method)
-    if input_method == 1:
+    if input_method == 2:
+        path = input("Input file path: ")
+        file = open(path, "r")
+        userInput = list(file.read())
+        file.close()
+    else:
         userInput = list(sys.stdin.read())
-        adjInput = lex(userInput)
-        while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
-            print(":\t".join([str(v) for v in adjInput[0]]))
-            adjInput = lex(adjInput[1])
+
+    adjInput = lex(userInput)
+    while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
         print(":\t".join([str(v) for v in adjInput[0]]))
+        adjInput = lex(adjInput[1])
+    print(":\t".join([str(v) for v in adjInput[0]]))
+
