@@ -179,9 +179,15 @@ def lex(input):
 # Read user input from the terminal.
 # Output is formatted as string to incorporate newlines and tabs for STRINGS.
 if __name__ == "__main__":
-    userInput = list(sys.stdin.read())
-    adjInput = lex(userInput)
-    while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
+    input_method = input("Please choose which mode you would like the lexer to run. Console(1) or File(2): ")
+    userInput = int(list(sys.stdin.read()))
+    while 2 < userInput < 1:
+        input_method = input("Invalid input. Please choose which mode you would like the lexer to run. Console(1) or "
+                             "File(2): ")
+        userInput = int(list(sys.stdin.read()))
+    if userInput == 1:
+        adjInput = lex(userInput)
+        while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
+            print(":\t".join([str(v) for v in adjInput[0]]))
+            adjInput = lex(adjInput[1])
         print(":\t".join([str(v) for v in adjInput[0]]))
-        adjInput = lex(adjInput[1])
-print(":\t".join([str(v) for v in adjInput[0]]))
