@@ -195,13 +195,19 @@ if __name__ == "__main__":
                              "File(2): ")
     input_method = int(input_method)
     if input_method == 2:
-        path = input("Input file path: ")
-        file = open(path, "r")
+        while True:
+            try:
+                path = input("Input file path: ")
+                if path == "-1":
+                    sys.exit("Lexer program ended successfully.")
+                file = open(path, "r")
+                break
+            except Exception:
+                print("Unable to find file. Please ensure the path name is correct or type \"-1\" to exit the program.")
         userInput = list(file.read())
         file.close()
     else:
         userInput = list(sys.stdin.read())
-
     adjInput = lex(userInput)
     while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
         print(":\t".join([str(v) for v in adjInput[0]]))
