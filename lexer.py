@@ -1,9 +1,13 @@
-# Lexer program used to identify lexemes and tokens
+# This lexer is used to parse the tokens and lexemes of a given programming language. It includes at least
+# one additional change to the program language's original requirements.
+# Created by Nathan Williams
 import sys
 
+# Keywords
 keywords = ["print", "get", "if", "then", "else", "end", "while", "do", "end", "and", "or", "not", "for"]
 line = 1
 
+# Lexemes and Tokens
 SEMICOLON = 0
 ASSIGN = 1
 PLUS = 2
@@ -27,50 +31,55 @@ END_OF_INPUT = 19
 INPUT_ERROR = 20
 
 
+# Add a newline counter to print the location of errors when they occur.
 def new_line():
     global line
     line = line + 1
 
 
+# Error function that prints the line number where the error occurred and msg to the user.
 def lex_error(error_msg):
     return INPUT_ERROR, "Error on line " + str(line) + ": " + error_msg
 
 
+# Clean spaces and newlines between symbols. Also cleans the comments located in the code.
 def clean_space_comment(input):
     i = 0
     while i < len(input) and (input[i].isspace() or input[i] == "/" or input[i] == "\n"):
         i = i + 1
-        if input[i - 1] == "\n":
+        if input[i - 1] == "\n":  # Add newline when \n is encountered.
             new_line()
         elif input[i - 1] == "/":
-            if i >= len(input) or input[i] != "/":
+            if i >= len(input) or input[i] != "/":  # Check for comment.
                 i = i - 1
                 break
             else:
-                while i < len(input) and input[i] != "\n":
+                while i < len(input) and input[i] != "\n": # Consume all input after // to the next \n character.
                     i = i + 1
                 new_line()
     return input[i:]
 
 
+# Lex INT tokens
 def lex_int(input):
     i = 0
     lexeme_int = ""
-    if input[i] == "-" or input[i] == "+":
+    if input[i] == "-" or input[i] == "+":  # If preceded by +/- then print - but consume +.
         if input[i] == "-":
             lexeme_int = lexeme_int + input[i]
         i = i + 1
-    while i < len(input) and input[i].isdigit():
+    while i < len(input) and input[i].isdigit():  # Continue lexeme until a non-digit character is found.
         lexeme_int = lexeme_int + input[i]
         i = i + 1
     return (INT, lexeme_int), input[i:]
 
 
+# Lex ID and Keywords
 def lex_id_or_keyword(input):
     i = 0
     lexeme_id = ""
-    while i < len(input) and (input[i].isalpha() or input[i].isdigit()):
-        lexeme_id = lexeme_id + input[i]
+    while i < len(input) and (input[i].isalpha() or input[i].isdigit()):  # Continue lexeme until non-alpha or
+        lexeme_id = lexeme_id + input[i]                                  # non-digit is found.
         i = i + 1
     for iterator in keywords:
         if iterator == lexeme_id:
@@ -78,37 +87,39 @@ def lex_id_or_keyword(input):
     return (ID, lexeme_id), input[i:]
 
 
+# Lex String
 def lex_string(input):
     i = 0
     lexeme_string = ""
-    if input[i] == "\"":
+    if input[i] == "\"":  # Consumer beginning quotation mark.
         i = i + 1
-    while i < len(input) and input[i] != "\"":
+    while i < len(input) and input[i] != "\"":  # Continue lexeme until EOF or ending quotation is found.
         i = i + 1
         if input[i - 1] == "\\":
             i = i + 1
-            if input[i - 1] == "\\":
+            if input[i - 1] == "\\":  # Skip escape character and add \.
                 lexeme_string = lexeme_string + "\\"
-            elif input[i - 1] == "\"":
+            elif input[i - 1] == "\"":  # Skip escape character and add ".
                 lexeme_string = lexeme_string + "\""
-            elif input[i - 1] == "n":
+            elif input[i - 1] == "n":  # Skip escape character and add newline.
                 lexeme_string = lexeme_string + "\n"
-            elif input[i - 1] == "t":
+            elif input[i - 1] == "t":  # Skip escape character and add tab.
                 lexeme_string = lexeme_string + '\t'
-            else:
+            else:  # Skip escape character and add next character.
                 lexeme_string = lexeme_string + input[i - 1]
         else:
             lexeme_string = lexeme_string + input[i - 1]
-    if i >= len(input) and input[i - 1] != "\"":
+    if i >= len(input) and input[i - 1] != "\"":  # Output error if no ending quotation is found.
         return lex_error("Missing ending quotation. Cannot process remaining input."), input[i:]
     else:
         return (STRING, lexeme_string), input[i + 1:]
 
 
+# Lex Input
 def lex(input):
-    input = clean_space_comment(input)
+    input = clean_space_comment(input)  # Clean spaces, comments and newlines.
     i = 0
-    if i >= len(input):
+    if i >= len(input):  # Return END_OF_INPUT if EOF found. Otherwise, return token else unexpected char error.
         return (END_OF_INPUT, None), []
     elif input[i] == ";":
         return (SEMICOLON, None), input[i + 1:]
@@ -126,7 +137,7 @@ def lex(input):
         i = i + 1
         if i < len(input) and input[i] == "=":
             return (NOT_EQUAL, None), input[i + 1:]
-        else:
+        else:  # Return error if = does not follow !.
             return lex_error("Unexpected Character \'" + input[i] + "\' after \'!\'. Expect \'=\'"), input[i:]
     elif input[i] == "<":
         i = i + 1
@@ -160,10 +171,13 @@ def lex(input):
         return lex_id_or_keyword(input)
     elif input[i] == "\"":
         return lex_string(input)
-    else:
+    else:  # Return unexpected character error as no matching token was found.
         return lex_error("Unexpected Character \'" + input[i] + "\'."), input[i + 1:]
 
 
+# Driver program
+# Read user input from the terminal.
+# Output is formatted as string to incorporate newlines and tabs for STRINGS.
 if __name__ == "__main__":
     userInput = list(sys.stdin.read())
     adjInput = lex(userInput)
