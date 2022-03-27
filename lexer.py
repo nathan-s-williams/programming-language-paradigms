@@ -24,11 +24,12 @@ NOT_EQUAL = 12
 LEFT_PAREN = 13
 RIGHT_PAREN = 14
 INT = 15
-ID = 16
-KEYWORD = 17
-STRING = 18
-END_OF_INPUT = 19
-INPUT_ERROR = 20
+FLOAT = 16
+ID = 17
+KEYWORD = 18
+STRING = 19
+END_OF_INPUT = 20
+INPUT_ERROR = 21
 
 
 # Add a newline counter to print the location of errors when they occur.
@@ -63,15 +64,24 @@ def clean_space_comment(input):
 # Lex INT tokens
 def lex_int(input):
     i = 0
-    lexeme_int = ""
+    decimal_count = 0
+    lexeme_num = ""
     if input[i] == "-" or input[i] == "+":  # If preceded by +/- then print - but consume +.
         if input[i] == "-":
-            lexeme_int = lexeme_int + input[i]
+            lexeme_num = lexeme_num + input[i]
         i = i + 1
-    while i < len(input) and input[i].isdigit():  # Continue lexeme until a non-digit character is found.
-        lexeme_int = lexeme_int + input[i]
+    # Continue lexeme until a non-digit character is found.
+    while i < len(input) and (input[i].isdigit() or input[i] == "."):
+        if input[i] == ".":
+            decimal_count = decimal_count + 1
+        lexeme_num = lexeme_num + input[i]
         i = i + 1
-    return (INT, lexeme_int), input[i:]
+    if decimal_count > 1:
+        return lex_error("Unable to read float value."), input[i + 1:]
+    elif decimal_count == 1:
+        return (FLOAT, lexeme_num), input[i:]
+    else:
+        return (INT, lexeme_num), input[i:]
 
 
 # Lex ID and Keywords
@@ -180,12 +190,12 @@ def lex(input):
 # Output is formatted as string to incorporate newlines and tabs for STRINGS.
 if __name__ == "__main__":
     input_method = input("Please choose which mode you would like the lexer to run. Console(1) or File(2): ")
-    userInput = int(list(sys.stdin.read()))
-    while 2 < userInput < 1:
+    while len(input_method) > 1 or (input_method != "1" and input_method != "2"):
         input_method = input("Invalid input. Please choose which mode you would like the lexer to run. Console(1) or "
                              "File(2): ")
-        userInput = int(list(sys.stdin.read()))
-    if userInput == 1:
+    input_method = int(input_method)
+    if input_method == 1:
+        userInput = list(sys.stdin.read())
         adjInput = lex(userInput)
         while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
             print(":\t".join([str(v) for v in adjInput[0]]))
