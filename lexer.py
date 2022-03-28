@@ -70,17 +70,17 @@ def lex_int(input):
         if input[i] == "-":
             lexeme_num = lexeme_num + input[i]
         i = i + 1
-    # Continue lexeme until a non-digit character is found.
+    # Continue appending lexeme while i < lenth of input and there is a digit or period.
     while i < len(input) and (input[i].isdigit() or input[i] == "."):
-        if input[i] == ".":
+        if input[i] == ".":  # Count the number of decimals appended
             decimal_count = decimal_count + 1
         lexeme_num = lexeme_num + input[i]
         i = i + 1
-    if decimal_count > 1:
+    if decimal_count > 1:  # If decimals are > 1 then output input error.
         return lex_error("Unable to read float value."), input[i + 1:]
-    elif decimal_count == 1:
+    elif decimal_count == 1:  # If only one decimal then return FLOAT with lexeme.
         return (FLOAT, lexeme_num), input[i:]
-    else:
+    else:  # If no decimal then return INT
         return (INT, lexeme_num), input[i:]
 
 
@@ -115,7 +115,7 @@ def lex_string(input):
                 lexeme_string = lexeme_string + "\n"
             elif input[i - 1] == "t":  # Skip escape character and add tab.
                 lexeme_string = lexeme_string + '\t'
-            else:  # Skip escape character and add next character.
+            else:  # Skip escape character and add next one.
                 lexeme_string = lexeme_string + input[i - 1]
         else:
             lexeme_string = lexeme_string + input[i - 1]
