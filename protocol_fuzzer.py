@@ -1,7 +1,19 @@
 import random
 
-keywords = ["print", "get", "if", "then", "else", "end", "while", "do", "end", "and", "or", "not", "for"]
+select_keywords = ["then", "else", "end"]
+loop_keywords = ["while", "do", "for", "end"]
+operators = ["+", "-", "*", "/", "%", "not", "("]
+logical_operators = ["<", ">", "<=", ">=", "==", "!=", "and", "or"]
+io_keywords = ["print", "get"]
+# Remaining operators: "=", ";", ")", "if"
+stmt = ["print", "input", "assign", "if", "while", "for"]
 
+
+def get_operator():
+    pass
+
+def get_logical_operator():
+    pass
 
 def get_id():
     var = ""
@@ -44,6 +56,16 @@ def get_comment():
     else:
         return ""
 
+# def get_select_stmt():
+#     length = random.randint(0, 2)
+#     for i in range(0, length):
+#         if i == 0:
+#             stmt = stmt + "if"
+#         else:
+#             stmt = stmt + " if"
+#         stmt = stmt + " " + random.choice(get_id(),get_digit())
+#         stmt = stmt + " " +
+
 
 
 def prot_fuzzer():
@@ -54,9 +76,6 @@ def prot_fuzzer():
     return output
 
     # Break up the keywords into categories and make an if for each one. Structure each one appropriately.
-
-    # return get_id()
-    # return get_comment()
 
 
 print(prot_fuzzer())
