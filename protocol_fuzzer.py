@@ -8,26 +8,81 @@ io_keywords = ["print", "get"]
 # Remaining operators: "=", ";", ")", "if"
 stmt = ["print", "input", "assign", "if", "while", "for"]
 
+if_while_count = 0
 
-def get_operator():
-    pass
 
-def get_logical_operator():
-    pass
+def if_while_limit_reached():
+    global if_while_count
+    # print(if_while_count)
+    if if_while_count > 3:
+        return True
+    if_while_count = if_while_count + 1
+    return False
+
+
+def get_expr():
+    return "test"
+
+
+def get_stmt():
+    output = random.choice([get_print(), get_input(), get_assign(), get_if(), get_while()])
+    return output
+
+
+def get_stmt_list(count):
+    if count > 2:
+        return "\n"
+    count = count + 1
+    output = get_stmt()
+    return output + ";\n" + get_stmt_list(count)  # random.choice(["", get_stmt_list(count)])
+
+
+# Functions to return statements
+
+
+def get_while():
+    # if if_while_limit_reached():
+    #     return ""
+    # return "while " + get_expr() + " do\n" + get_stmt_list(0) + "\nend"
+    return "while " + get_expr() + "do" + get_stmt_list(1)
+
+
+def get_if():
+    if if_while_limit_reached():
+        return ""
+    return "if " + get_expr() + " then\n" + get_stmt_list(0) + "else " + get_stmt_list(0) + "\nend"
+
+
+def get_assign():
+    return get_id() + " = " + get_expr()
+
+
+def get_input():
+    return "input " + get_id()
+
+
+def get_print():
+    return "print " + random.choice([get_str(), get_expr()])
+
+
+# Functions to return strings, id's, digits and comments
+def get_str():
+    return "\"" + get_id() + "\""
+
 
 def get_id():
-    var = ""
+    output = ""
     alpha_char = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     num_char = "0123456789"
     length = random.randint(1, 10)
-    var = alpha_char[random.randint(0, 52)]
+    output = alpha_char[random.randint(0, 52)]
     for i in range(0, length):
         char_type = random.randint(1, 2)
         if char_type == 1:
-            var = var + alpha_char[random.randint(0, 52)]
+            output = output + alpha_char[random.randint(0, 52)]
         else:
-            var = var + num_char[random.randint(0, 9)]
-    return var
+            output = output + num_char[random.randint(0, 9)]
+    return output
 
 
 def get_digit():
@@ -56,26 +111,13 @@ def get_comment():
     else:
         return ""
 
-# def get_select_stmt():
-#     length = random.randint(0, 2)
-#     for i in range(0, length):
-#         if i == 0:
-#             stmt = stmt + "if"
-#         else:
-#             stmt = stmt + " if"
-#         stmt = stmt + " " + random.choice(get_id(),get_digit())
-#         stmt = stmt + " " +
 
-
-
+# Driver
 def prot_fuzzer():
-    output = ""
-    length = random.randint(1, 10)
-    for i in range(0, length):
-        output = output + (random.choice(keywords) + " " + random.choice([get_id, get_digit, get_comment])() + "\n")
-    return output
+    return get_stmt_list(0)
 
     # Break up the keywords into categories and make an if for each one. Structure each one appropriately.
 
 
+# if __name__ == "__main__":
 print(prot_fuzzer())
