@@ -12,23 +12,24 @@ f_expr = ["*", "/", "%"]
 t_expr = ["+", "-"]
 b_expr = ["and", "or"]
 
+
 def gen_code():
     fuzz = ""
     length = random.randint(1, 5)
     for i in range(0, length):
         choice = random.randint(1, 5)
         if choice <= 3:
-            fuzz = fuzz + std_cmd(choice, fuzz)
+            fuzz = std_cmd(choice, fuzz)
         elif choice == 4:
             if_length = random.randint(1, 3)
             fuzz = fuzz + "if " + get_expr() + " then\n"
             for y in range(0, if_length):
                 sub_choice = random.randint(1, 3)
-                fuzz = fuzz + std_cmd(sub_choice, fuzz) + "\n"
+                fuzz = std_cmd(sub_choice, fuzz) + "\n"
             fuzz = fuzz + "else\n"
             for y in range(0, if_length):
                 sub_choice = random.randint(1, 3)
-                fuzz = fuzz + std_cmd(sub_choice, fuzz) + "\n"
+                fuzz = std_cmd(sub_choice, fuzz) + "\n"
             fuzz = fuzz + "end;\n"
 
     return fuzz
@@ -47,6 +48,7 @@ def std_cmd(choice, fuzz):
     elif choice == 3:
         fuzz = fuzz + get_id() + " = " + get_expr() + ";\n"
     return fuzz
+
 
 # Expressions
 def get_expr():
