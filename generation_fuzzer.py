@@ -1,17 +1,24 @@
 import random
 
 
-def fuzzer():
-    sign = random.randint(1, 3)
-    fuzz_int = ""
-    if sign == 1:
-        fuzz_int = "+"
-    elif sign == 2:
-        fuzz_int = "-"
-    length = random.randint(0, 3)
+def get_code():
+    character = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ()not->>=<<===!=*/%+-andor"
+    num_char = "0123456789"
+    length = random.randint(1, 6)
+    output = character[random.randint(0, 78)]
     for i in range(0, length):
-        fuzz_int = fuzz_int + str(random.randint(0, 10))
-    return fuzz_int
+        char_type = random.randint(1, 2)
+        if char_type == 1:
+            output = output + character[random.randint(0, 52)]
+        else:
+            output = output + num_char[random.randint(0, 9)]
+    return output
 
 
-print(fuzzer())
+if __name__ == "__main__":
+    gen_code = ""
+    code_length = random.randint(3, 20)
+    for i in range(0, code_length):
+        gen_code = gen_code + " " + get_code()
+    f = open("generated_fuzz.txt", "w")
+    f.write(gen_code)

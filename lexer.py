@@ -88,7 +88,7 @@ def lex_int(input):
 def lex_id_or_keyword(input):
     i = 0
     lexeme_id = ""
-    while i < len(input) and (input[i].isalpha() or input[i].isdigit()):  # Continue lexeme until non-alpha or
+    while i < len(input) and (input[i].isalpha() or input[i].isdigit() or input[i] == "_"):
         lexeme_id = lexeme_id + input[i]  # non-digit is found.
         i = i + 1
     for iterator in keywords:
