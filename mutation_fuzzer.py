@@ -150,22 +150,6 @@ def get_digit():
     return var
 
 
-def get_comment():
-    comm = random.randint(0, 20)
-    if comm == 0:
-        return "// This is comment number 1"
-    elif comm == 1:
-        return "// This is comment number 2"
-    elif comm == 2:
-        return "// This is comment number 3"
-    elif comm == 3:
-        return "// This is comment number 4"
-    elif comm == 4:
-        return "// This is comment number 5"
-    else:
-        return ""
-
-
 def mutate(mut_string):
     mut_string = mut_string.replace("print", get_id())
     mut_string = mut_string.replace("get", get_id())
