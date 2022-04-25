@@ -188,29 +188,29 @@ def lex(input):
 # Driver program
 # Read user input from the terminal or by a file.
 # Output is formatted as string to incorporate newlines and tabs for STRINGS.
-if __name__ == "__main__":
-    input_method = input("Please choose which mode you would like the lexer to run. Console(1) or File(2): ")
-    while len(input_method) > 1 or (input_method != "1" and input_method != "2"):
-        input_method = input("Invalid input. Please choose which mode you would like the lexer to run. Console(1) or "
-                             "File(2): ")
-    input_method = int(input_method)
-    if input_method == 2:
-        while True:
-            try:
-                path = input("Input file path: ")
-                if path == "-1":
-                    sys.exit("Lexer program ended successfully.")
-                file = open(path, "r")
-                break
-            except Exception:
-                print("Unable to find file. Please ensure the path name is correct or type \"-1\" to exit the program.")
-        userInput = list(file.read())
-        file.close()
-    else:
-        userInput = list(sys.stdin.read())
-    adjInput = lex(userInput)
-    while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
-        print(":\t".join([str(v) for v in adjInput[0]]))
-        adjInput = lex(adjInput[1])
-    print(":\t".join([str(v) for v in adjInput[0]]))
+# if __name__ == "__main__":
+#     input_method = input("Please choose which mode you would like the lexer to run. Console(1) or File(2): ")
+#     while len(input_method) > 1 or (input_method != "1" and input_method != "2"):
+#         input_method = input("Invalid input. Please choose which mode you would like the lexer to run. Console(1) or "
+#                              "File(2): ")
+#     input_method = int(input_method)
+#     if input_method == 2:
+#         while True:
+#             try:
+#                 path = input("Input file path: ")
+#                 if path == "-1":
+#                     sys.exit("Lexer program ended successfully.")
+#                 file = open(path, "r")
+#                 break
+#             except Exception:
+#                 print("Unable to find file. Please ensure the path name is correct or type \"-1\" to exit the program.")
+#         userInput = list(file.read())
+#         file.close()
+#     else:
+#         userInput = list(sys.stdin.read())
+#     adjInput = lex(userInput)
+#     while adjInput[0][0] != EOFError and adjInput[0][0] != END_OF_INPUT:
+#         print(":\t".join([str(v) for v in adjInput[0]]))
+#         adjInput = lex(adjInput[1])
+#     print(":\t".join([str(v) for v in adjInput[0]]))
 
