@@ -1,8 +1,9 @@
-print "Hello World!";
-x = 8.90;
-y = 5;
-z = x + y;
-if(z >= 10) then
-z = 100;   //This is a comment.
-else
-z = 0;
+//print "Hello World!";
+//x = 8.90;
+//y = 5;
+//z = x + y;
+//if(z >= 10) then
+//z = 100;   //This is a comment.
+//else
+//z = 0;
+test = -9;

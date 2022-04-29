@@ -1,3 +1,9 @@
+# NOTES
+# Do not lex() before a call to a function. The function should lex if it is responsible for a term.
+# Make sure error inputs are handled everywhere.
+# Implemented Float
+# !!!Fix it so that assignments and all other related terms fully traverse their execution.
+
 import sys
 import lexer
 
@@ -19,11 +25,13 @@ def parse_prog():
 
 
 def parse_stmt_list():
+    global nextToken
     result = parse_stmt()
     if result:
-        if nextToken != lexer.END_OF_INPUT:
+        lex()
+        if nextToken[0] != lexer.END_OF_INPUT:
             result = parse_stmt_list()
-    return True
+    return result
 
 
 def parse_stmt():
@@ -71,16 +79,121 @@ def parse_stmt():
         print("for loop")
     elif nextToken[0] == lexer.INPUT_ERROR:  # Input error found.
         return False
-    return False    # Parser cannot parse input. Return False.
+    return True
 
 
 def parse_expr():
-    return
+    return parse_n_expr() and parse_b_expr()
 
 
-lex_input = list(sys.stdin.read())
-lex()
-if parse_prog():
-    print("This program is correct.")
-else:
-    print("This program is not correct.")
+def parse_n_expr():
+    return parse_term() and parse_t_expr()
+
+
+def parse_b_expr():
+    global nextToken
+    if nextToken[1] == "and":
+        lex()
+        return parse_n_expr()
+    elif nextToken[1] == "or":
+        lex()
+        return parse_n_expr()
+    return True
+
+
+def parse_term():
+    return parse_factor() and parse_f_expr()
+
+
+def parse_t_expr():
+    global nextToken
+    if nextToken[0] == lexer.PLUS:
+        lex()
+        return parse_n_expr()
+    elif nextToken[0] == lexer.MINUS:
+        lex()
+        return parse_n_expr()
+    return True
+
+
+def parse_factor():
+    return parse_value() and parse_v_expr()
+
+
+def parse_f_expr():
+    global nextToken
+    if nextToken[0] == lexer.MULTIPLICATION:
+        lex()
+        return parse_term()
+    elif nextToken[0] == lexer.DIVISION:
+        lex()
+        return parse_term()
+    elif nextToken[0] == lexer.MODULUS:
+        lex()
+        return parse_term()
+    return True
+
+
+def parse_value():
+    global nextToken
+    if nextToken[0] == lexer.LEFT_PAREN:
+        if parse_expr():
+            lex()
+            if nextToken[0] == lexer.RIGHT_PAREN:
+                return True
+        return False
+    elif nextToken[1] == "not":
+        return parse_expr()
+    elif nextToken[0] == lexer.INT and nextToken[1][0] == "-":
+        return True
+    elif nextToken[0] == lexer.ID:
+        return True
+    elif nextToken[0] == lexer.INT:
+        return True
+    elif nextToken[0] == lexer.FLOAT:
+        return True
+    return True  # No matches made. Return True.
+
+
+def parse_v_expr():
+    global nextToken
+    if nextToken[0] == lexer.GT:
+        lex()
+        return parse_value()
+    elif nextToken[0] == lexer.GT_OR_EQUAL:
+        lex()
+        return parse_value()
+    elif nextToken[0] == lexer.LT:
+        lex()
+        return parse_value()
+    elif nextToken[0] == lexer.LT_OR_EQUAL:
+        lex()
+        return parse_value()
+    elif nextToken[0] == lexer.EQUAL:
+        lex()
+        return parse_value()
+    elif nextToken[0] == lexer.NOT_EQUAL:
+        lex()
+        return parse_value()
+    return True
+
+
+if __name__ == "__main__":
+    while True:
+        try:
+            path = input("Input file path: ")
+            if path == "-1":
+                sys.exit("Parser program ended successfully.")
+            file = open(path, "r")
+            break
+        except Exception:
+            print("Unable to find file. Please ensure the path name is correct or type \"-1\" to exit the program.")
+    lex_input = list(file.read())
+    file.close()
+
+    # lex_input = list(sys.stdin.read())
+    lex()
+    if parse_prog():
+        print("This program is correct.")
+    else:
+        print("This program is not correct.")
