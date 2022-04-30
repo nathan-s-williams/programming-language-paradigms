@@ -32,6 +32,7 @@ END_OF_INPUT = 20
 INPUT_ERROR = 21
 LEFT_BRACKET = 22
 RIGHT_BRACKET = 23
+COMMA = 24
 
 
 # Add a newline counter to print the location of errors when they occur.
@@ -135,6 +136,8 @@ def lex(input):
         return (END_OF_INPUT, None), []
     elif input[i] == ";":
         return (SEMICOLON, None), input[i + 1:]
+    elif input[i] == ",":
+        return (COMMA, None), input[i + 1:]
     elif input[i] == "*":
         return (MULTIPLICATION, None), input[i + 1:]
     elif input[i] == "%":
