@@ -30,6 +30,8 @@ KEYWORD = 18
 STRING = 19
 END_OF_INPUT = 20
 INPUT_ERROR = 21
+LEFT_BRACKET = 22
+RIGHT_BRACKET = 23
 
 
 # Add a newline counter to print the location of errors when they occur.
@@ -141,6 +143,10 @@ def lex(input):
         return (LEFT_PAREN, None), input[i + 1:]
     elif input[i] == ")":
         return (RIGHT_PAREN, None), input[i + 1:]
+    elif input[i] == "[":
+        return (LEFT_BRACKET, None), input[i + 1:]
+    elif input[i] == "]":
+        return (RIGHT_BRACKET, None), input[i + 1:]
     elif input[i] == "/":
         return (DIVISION, None), input[i + 1:]
     elif input[i] == "!":
