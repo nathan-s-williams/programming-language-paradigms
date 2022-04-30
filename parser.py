@@ -1,7 +1,7 @@
 # NOTES
 # Make sure error inputs are handled everywhere.
 # Implemented Float
-# You should lex if you find something only
+# You should lex if an if condition passes where you make a direct comparison.
 
 import sys
 import lexer
@@ -37,12 +37,14 @@ def parse_stmt():
     if nextToken[1] == "print":
         lex()
         if nextToken[0] == lexer.STRING:
+            lex()
             return True
         else:
             return parse_expr()
     elif nextToken[1] == "get":
         lex()
         if nextToken[0] == lexer.ID:
+            lex()
             return True
     elif nextToken[0] == lexer.ID:
         lex()
@@ -52,31 +54,29 @@ def parse_stmt():
     elif nextToken[1] == "if":
         lex()
         if parse_expr():
-            lex()
             if nextToken[1] == "then":
                 lex()
                 if parse_stmt_list():
-                    lex()
                     if nextToken[1] == "else":
                         lex()
                         if parse_stmt_list():
-                            lex()
                             if nextToken[1] == "end":
+                                lex()
                                 return True
         return False  # Return False if any of the if conditions fail.
     elif nextToken[1] == "while":
         lex()
         if parse_expr():
-            lex()
             if nextToken[1] == "do":
                 lex()
                 if parse_stmt_list():
-                    lex()
                     if nextToken[1] == "end":
+                        lex()
                         return True
     elif nextToken[1] == "for":    # Finish for loop
         print("for loop")
     elif nextToken[0] == lexer.INPUT_ERROR:  # Input error found.
+        lex()
         return False
     lex()
     return True
