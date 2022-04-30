@@ -1,8 +1,7 @@
 # NOTES
-# Do not lex() before a call to a function. The function should lex if it is responsible for a term.
 # Make sure error inputs are handled everywhere.
 # Implemented Float
-# !!!Fix it so that assignments and all other related terms fully traverse their execution.
+# You should lex if you find something only
 
 import sys
 import lexer
@@ -28,7 +27,6 @@ def parse_stmt_list():
     global nextToken
     result = parse_stmt()
     if result:
-        lex()
         if nextToken[0] != lexer.END_OF_INPUT:
             result = parse_stmt_list()
     return result
@@ -65,6 +63,7 @@ def parse_stmt():
                             lex()
                             if nextToken[1] == "end":
                                 return True
+        return False  # Return False if any of the if conditions fail.
     elif nextToken[1] == "while":
         lex()
         if parse_expr():
@@ -79,6 +78,7 @@ def parse_stmt():
         print("for loop")
     elif nextToken[0] == lexer.INPUT_ERROR:  # Input error found.
         return False
+    lex()
     return True
 
 
@@ -137,20 +137,26 @@ def parse_f_expr():
 def parse_value():
     global nextToken
     if nextToken[0] == lexer.LEFT_PAREN:
+        lex()
         if parse_expr():
-            lex()
             if nextToken[0] == lexer.RIGHT_PAREN:
+                lex()
                 return True
         return False
     elif nextToken[1] == "not":
+        lex()
         return parse_expr()
     elif nextToken[0] == lexer.INT and nextToken[1][0] == "-":
+        lex()
         return True
     elif nextToken[0] == lexer.ID:
+        lex()
         return True
     elif nextToken[0] == lexer.INT:
+        lex()
         return True
     elif nextToken[0] == lexer.FLOAT:
+        lex()
         return True
     return True  # No matches made. Return True.
 

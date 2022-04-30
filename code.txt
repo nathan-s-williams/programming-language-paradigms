@@ -5,5 +5,7 @@
 //if(z >= 10) then
 //z = 100;   //This is a comment.
 //else
-//z = 0;
-test = -9;
+z = 0;
+
+//test = (8 - 5) + 3;
+//test = -9;
