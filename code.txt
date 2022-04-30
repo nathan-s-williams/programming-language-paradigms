@@ -1,11 +1,13 @@
 //print "Hello World!";
-//x = 8.90;
+//y = !a;
+//x = 5;
 //y = 5;
 //z = x + y;
-//if(z >= 10) then
+if(z >= 10) then
 //z = 100;   //This is a comment.
-//else
-//z = 0;
+else
+z = 0;
+end;
 get test;
 //test = (8 - 5) + 3;
 //test = -9;
