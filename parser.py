@@ -6,9 +6,15 @@
 import sys
 import lexer
 
+INPUT_ERROR = 0
+FILE_EMPTY_ERROR = 1
 
-def error(msg):
-    print("Error on line " + str(lexer.line) + ": " + msg)
+
+def error(msg, err_type):
+    if err_type == INPUT_ERROR:
+        print("Error on line " + str(lexer.line) + ": " + msg)
+    elif err_type == FILE_EMPTY_ERROR:
+        print("File warning: " + msg)
 
 
 def lex():
@@ -16,7 +22,7 @@ def lex():
     global nextToken
     (nextToken, lex_input) = lexer.lex(lex_input)
     if nextToken[0] == lexer.INPUT_ERROR:
-        error("Error in input.")
+        error("Error in input.", INPUT_ERROR)
 
 
 def parse_prog():
@@ -108,6 +114,9 @@ def parse_stmt():
                                                         if nextToken[1] == "end":
                                                             lex()
                                                             return True
+    elif nextToken[0] == lexer.END_OF_INPUT:  # Reached end-of-input prematurely. Throw warning.
+        error("File empty.", FILE_EMPTY_ERROR)
+        return True
     elif nextToken[0] == lexer.INPUT_ERROR:  # Input error found.
         lex()
         return False
