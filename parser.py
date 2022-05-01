@@ -76,8 +76,31 @@ def parse_stmt():
                     if nextToken[1] == "end":
                         lex()
                         return True
-    elif nextToken[1] == "for":    # Finish for loop
-        print("for loop")
+    elif nextToken[1] == "for":
+        lex()
+        if nextToken[0] == lexer.LEFT_PAREN:
+            lex()
+            if nextToken[0] == lexer.ID:
+                lex()
+                if nextToken[0] == lexer.ASSIGN:
+                    lex()
+                    if parse_expr():
+                        if nextToken[0] == lexer.SEMICOLON:
+                            lex()
+                            if parse_expr():
+                                if nextToken[0] == lexer.SEMICOLON:
+                                    lex()
+                                    if nextToken[0] == lexer.ID:
+                                        lex()
+                                        if nextToken[0] == lexer.ASSIGN:
+                                            lex()
+                                            if parse_expr():
+                                                if nextToken[0] == lexer.RIGHT_PAREN:
+                                                    lex()
+                                                    if parse_stmt_list():
+                                                        if nextToken[1] == "end":
+                                                            lex()
+                                                            return True
     elif nextToken[0] == lexer.INPUT_ERROR:  # Input error found.
         lex()
         return False
