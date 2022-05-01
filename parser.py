@@ -54,7 +54,14 @@ def parse_stmt():
         lex()
         if nextToken[0] == lexer.ASSIGN:
             lex()
-            return parse_expr()
+            if nextToken[0] == lexer.LEFT_BRACKET:
+                lex()
+                if parse_int_array():
+                    if nextToken[0] == lexer.RIGHT_BRACKET:
+                        lex()
+                        return True
+            else:
+                return parse_expr()
     elif nextToken[1] == "if":
         lex()
         if parse_expr():
@@ -183,6 +190,18 @@ def parse_value():
         lex()
         return True
     return False  # There must be a value or a function call at this level.
+
+
+def parse_int_array():
+    global nextToken
+    if nextToken[0] == lexer.INT:
+        lex()
+        if nextToken[0] == lexer.COMMA:
+            lex()
+            return parse_int_array()
+        else:
+            return True
+    return False
 
 
 def parse_v_expr():
