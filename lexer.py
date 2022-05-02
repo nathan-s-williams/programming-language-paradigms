@@ -1,7 +1,6 @@
 # This lexer is used to parse the tokens and lexemes of a given programming language. It includes at least
 # one additional change to the program language's original requirements.
 # Created by Nathan Williams
-import sys
 
 # Keywords
 keywords = ["print", "get", "if", "then", "else", "end", "while", "do", "end", "and", "or", "not", "for"]

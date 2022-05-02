@@ -1,10 +1,13 @@
-# NOTES
-# Make sure error inputs are handled everywhere.
-# Implemented Float
-# You should lex if an if condition passes where you make a direct comparison.
+# This parser program parses files with code in our language specification. It will output if the program is
+# correct or incorrect based on the syntax. It utilizes our lexer program to correctly parse through the code.
+# Created by Nathan Williams
 
 import sys
 import lexer
+
+
+nextToken = ""
+if_while_flag = False
 
 INPUT_ERROR = 0
 FILE_EMPTY_ERROR = 1
@@ -12,9 +15,11 @@ FILE_EMPTY_ERROR = 1
 
 def error(msg, err_type):
     if err_type == INPUT_ERROR:
-        print("Error on line " + str(lexer.line) + ": " + msg)
+        print("\nError on line " + str(lexer.line) + ": " + msg)
     elif err_type == FILE_EMPTY_ERROR:
-        print("File warning: " + msg)
+        print("\nFile warning: " + msg)
+    else:
+        print("\nError: Unknown reason.")
 
 
 def lex():
@@ -36,6 +41,8 @@ def parse_stmt_list():
         if nextToken[0] == lexer.SEMICOLON:
             lex()
         if nextToken[1] == "else" or nextToken[1] == "end":
+            if not if_while_flag:
+                result = False
             return result
         if nextToken[0] != lexer.END_OF_INPUT:
             result = parse_stmt_list()
@@ -44,6 +51,7 @@ def parse_stmt_list():
 
 def parse_stmt():
     global nextToken
+    global if_while_flag
     if nextToken[1] == "print":
         lex()
         if nextToken[0] == lexer.STRING:
@@ -69,6 +77,7 @@ def parse_stmt():
             else:
                 return parse_expr()
     elif nextToken[1] == "if":
+        if_while_flag = True  # Start the if execution
         lex()
         if parse_expr():
             if nextToken[1] == "then":
@@ -79,8 +88,10 @@ def parse_stmt():
                         if parse_stmt_list():
                             if nextToken[1] == "end":
                                 lex()
+                                if_while_flag = False  # End the if execution
                                 return True
     elif nextToken[1] == "while":
+        if_while_flag = True  # Start the while execution
         lex()
         if parse_expr():
             if nextToken[1] == "do":
@@ -88,8 +99,10 @@ def parse_stmt():
                 if parse_stmt_list():
                     if nextToken[1] == "end":
                         lex()
+                        if_while_flag = True  # Start the while execution
                         return True
     elif nextToken[1] == "for":
+        if_while_flag = True  # Start the for execution
         lex()
         if nextToken[0] == lexer.LEFT_PAREN:
             lex()
@@ -113,9 +126,11 @@ def parse_stmt():
                                                     if parse_stmt_list():
                                                         if nextToken[1] == "end":
                                                             lex()
+                                                            if_while_flag = False  # Start the for execution
                                                             return True
     elif nextToken[0] == lexer.END_OF_INPUT:  # Reached end-of-input prematurely. Throw warning.
-        error("File empty.", FILE_EMPTY_ERROR)
+        if not if_while_flag:
+            error("File empty.", FILE_EMPTY_ERROR)
         return True
     elif nextToken[0] == lexer.INPUT_ERROR:  # Input error found.
         lex()
@@ -252,6 +267,6 @@ if __name__ == "__main__":
     # lex_input = list(sys.stdin.read())
     lex()
     if parse_prog():
-        print("This program is correct.")
+        print("\nThis program is correct.")
     else:
-        print("This program is not correct.")
+        print("\nThis program is not correct.")
