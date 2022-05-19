@@ -1,2 +1,0 @@
-for i in $(seq 1 2); do F=$(python3 generation_fuzzer.py); echo "Fuzz: $F"; echo "$F" | python3 fibonacci.py; done
-
